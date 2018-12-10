@@ -26,7 +26,23 @@ export class MLKitFaceDetection extends MLKitFaceDetectionBase {
 
         for (let i = 0, l = faces.count; i < l; i++) {
           const face: FIRVisionFace = faces.objectAtIndex(i);
+          const rect = face.frame
+          const leftCheek = face.landmarkOfType(FIRFaceLandmarkTypeLeftCheek);
+          const rightCheek = face.landmarkOfType(FIRFaceLandmarkTypeRightCheek);
+          const landmarks = {rightCheek : {} , leftCheek: {}}
+          if (leftCheek && rightCheek) {
+              landmarks.rightCheek = {
+                  x : rightCheek.position.x,
+                  y : rightCheek.position.y,
+              }
+              landmarks.leftCheek = {
+                  x : leftCheek.position.x,
+                  y : leftCheek.position.y
+              }
+          }
           result.faces.push({
+            landmarks: landmarks,
+            boundingRect: {top: rect.origin.x, bottom: rect.origin.y, left: rect.size.height, right: rect.size.width},
             smilingProbability: face.hasSmilingProbability ? face.smilingProbability : undefined,
             leftEyeOpenProbability: face.hasLeftEyeOpenProbability ? face.leftEyeOpenProbability : undefined,
             rightEyeOpenProbability: face.hasRightEyeOpenProbability ? face.rightEyeOpenProbability : undefined,
@@ -82,7 +98,23 @@ export function detectFacesOnDevice(options: MLKitDetectFacesOnDeviceOptions): P
 
           for (let i = 0, l = faces.count; i < l; i++) {
             const face: FIRVisionFace = faces.objectAtIndex(i);
+            const rect: CGRect = face.frame
+            const leftCheek = face.landmarkOfType(FIRFaceLandmarkTypeLeftCheek);
+            const rightCheek = face.landmarkOfType(FIRFaceLandmarkTypeRightCheek);
+            const landmarks = {rightCheek : {} , leftCheek: {}}
+            if (leftCheek && rightCheek) {
+                landmarks.rightCheek = {
+                    x : rightCheek.position.x,
+                    y : rightCheek.position.y,
+                }
+                landmarks.leftCheek = {
+                    x : leftCheek.position.x,
+                    y : leftCheek.position.y
+                }
+            }
             result.faces.push({
+              landmarks: landmarks,
+              boundingRect: {top: rect.origin.x, bottom: rect.origin.y, left: rect.size.height, right: rect.size.width},
               smilingProbability: face.hasSmilingProbability ? face.smilingProbability : undefined,
               leftEyeOpenProbability: face.hasLeftEyeOpenProbability ? face.leftEyeOpenProbability : undefined,
               rightEyeOpenProbability: face.hasRightEyeOpenProbability ? face.rightEyeOpenProbability : undefined,

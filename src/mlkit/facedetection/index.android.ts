@@ -32,7 +32,23 @@ export class MLKitFaceDetection extends MLKitFaceDetectionBase {
         // see https://github.com/firebase/quickstart-android/blob/0f4c86877fc5f771cac95797dffa8bd026dd9dc7/mlkit/app/src/main/java/com/google/firebase/samples/apps/mlkit/textrecognition/TextRecognitionProcessor.java#L62
         for (let i = 0; i < faces.size(); i++) {
           const face = faces.get(i);
+          const rect = face.getBoundingBox();
+          const leftCheek = face.getLandmark(1);
+          const rightCheek = face.getLandmark(7);
+          const landmarks = {rightCheek : {} , leftCheek: {}}
+          if (leftCheek && rightCheek) {
+              landmarks.rightCheek = {
+                  x : parseFloat(rightCheek.getPosition().getX()),
+                  y : parseFloat(rightCheek.getPosition().getY()),
+              }
+              landmarks.leftCheek = {
+                  x : parseFloat(leftCheek.getPosition().getX()),
+                  y : parseFloat(leftCheek.getPosition().getY()),
+              }
+          }
           result.faces.push({
+            landmarks: landmarks,
+            boundingRect: {bottom: rect.bottom, left: rect.left, right: rect.right, top: rect.top },
             smilingProbability: face.getSmilingProbability() !== com.google.firebase.ml.vision.face.FirebaseVisionFace.UNCOMPUTED_PROBABILITY ? face.getSmilingProbability() : undefined,
             leftEyeOpenProbability: face.getLeftEyeOpenProbability() !== com.google.firebase.ml.vision.face.FirebaseVisionFace.UNCOMPUTED_PROBABILITY ? face.getLeftEyeOpenProbability() : undefined,
             rightEyeOpenProbability: face.getRightEyeOpenProbability() !== com.google.firebase.ml.vision.face.FirebaseVisionFace.UNCOMPUTED_PROBABILITY ? face.getRightEyeOpenProbability() : undefined,
@@ -80,7 +96,23 @@ export function detectFacesOnDevice(options: MLKitDetectFacesOnDeviceOptions): P
             // see https://github.com/firebase/quickstart-android/blob/0f4c86877fc5f771cac95797dffa8bd026dd9dc7/mlkit/app/src/main/java/com/google/firebase/samples/apps/mlkit/textrecognition/TextRecognitionProcessor.java#L62
             for (let i = 0; i < faces.size(); i++) {
               const face = faces.get(i);
+              const rect = face.getBoundingBox();
+              const leftCheek = face.getLandmark(1);
+              const rightCheek = face.getLandmark(7);
+              const landmarks = {rightCheek : {} , leftCheek: {}}
+              if (leftCheek && rightCheek) {
+                  landmarks.rightCheek = {
+                      x : parseFloat(rightCheek.getPosition().getX()),
+                      y : parseFloat(rightCheek.getPosition().getY()),
+                  }
+                  landmarks.leftCheek = {
+                      x : parseFloat(leftCheek.getPosition().getX()),
+                      y : parseFloat(leftCheek.getPosition().getY()),
+                  }
+              }
               result.faces.push({
+                landmarks: landmarks,
+                boundingRect: {bottom: rect.bottom, left: rect.left, right: rect.right, top: rect.top },
                 smilingProbability: face.getSmilingProbability() !== com.google.firebase.ml.vision.face.FirebaseVisionFace.UNCOMPUTED_PROBABILITY ? face.getSmilingProbability() : undefined,
                 leftEyeOpenProbability: face.getLeftEyeOpenProbability() !== com.google.firebase.ml.vision.face.FirebaseVisionFace.UNCOMPUTED_PROBABILITY ? face.getLeftEyeOpenProbability() : undefined,
                 rightEyeOpenProbability: face.getRightEyeOpenProbability() !== com.google.firebase.ml.vision.face.FirebaseVisionFace.UNCOMPUTED_PROBABILITY ? face.getRightEyeOpenProbability() : undefined,

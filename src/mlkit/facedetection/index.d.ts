@@ -2,6 +2,8 @@ import { MLKitOptions } from "../";
 import { MLKitCameraView, MLKitResult } from "../index";
 
 export interface MLKitDetectFacesResultFace {
+  landmarks: any,
+  boundingRect: {bottom: number, left: number, right: number, top: number },
   smilingProbability?: number;
   leftEyeOpenProbability?: number;
   rightEyeOpenProbability?: number;
@@ -26,9 +28,9 @@ export interface MLKitDetectFacesOnDeviceOptions extends MLKitOptions {
   /**
    * Whether or not to attempt to identify facial "landmarks": eyes, ears, nose, cheeks, mouth.
    * Default "none".
-   *
-  // detectLandmarks?: "none" | "all";
   */
+  detectLandmarks?: "none" | "all";
+
 
   /**
    * The minimum size, relative to the image, of faces to detect.
